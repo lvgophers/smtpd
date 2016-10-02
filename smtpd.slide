@@ -85,6 +85,7 @@ At this commit, timeout handling is not complete, some of the error handling is 
 
 Features that could be added:
 
+ - Context implementation
  - SPF/DKIM/DMARC checking
  - Extensions (STARTTLS in particular)
  - Fine grained mailboxes/userdirs/mapping
