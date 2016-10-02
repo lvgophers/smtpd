@@ -1,0 +1,93 @@
+An SMTP server in Go
+18:30 5 Oct 2016
+
+Јаκе Ваttеу
+Las Vegas Gophers
+http://j7bdev.github.io
+@j7bdev
+
+* What's this?
+
+This is an example of a practical inbound SMTP server written in Go.
+
+It's intended to exercise a fair amount of the standard library, show some practical approaches to common problems, and demonstrate different approaches to testing.
+
+Check it out at https://github.com/lvgophers/smtpd
+
+* The "specification"
+
+- Accept incoming SMTP connections
+- Greet with default hostname
+- Validate recipients
+- Store incoming messages in a maildir-compatible format https://cr.yp.to/proto/maildir.html
+
+* The base types
+
+- Config
+- Maildir
+- Server
+
+All of the base types are interfaces (actually named Interface) and have a constructor method.
+
+* Configuration
+
+Sometimes called a controldir, inspired by http://www.qmail.org/qmail-manual-html/man5/qmail-control.html
+
+.code config/config.go /START OMIT/,/END OMIT/
+
+* Maildir
+
+Three subdirectories, "tmp" for temporary files, "new" for "unread" messages, and "cur" for read messages.
+
+The "cur" directory isn't relevant for message delivery agents.  We don't really need to use "tmp" but do in this case, as it's likely to be on the same filesystem and so we can expect the atomicity guarantee(s) of renames on the same filesystem.
+
+.code maildir/maildir.go /START OMIT/,/END OMIT/
+
+This implementation creates the required directories if they don't exist.
+
+* Server
+
+Constructed with New() passing a net.Listener, the config interface, and the maildir interface. Handles accepted net.Conn in a goroutine
+
+.code server/server.go /START OMIT/,/END OMIT/
+
+Like http.ListenAndServe(addr,handler) it will return an error when Accept() returns one, which is generally only when the net.Listener is Close()ed.
+
+* Tests
+
+Some of the base types use unit tests. The configuration tests that files in the controldir are read and consumed correctly.
+
+The main test is in the "blackbox" package, which uses the standard "net/smtp" package as a client to test the server.
+
+The "blackbox" test uses the Go 1.7+ subtest feature, exercising the config, maildir, and server packages as if they were run from main().
+
+* The blackbox test:
+
+ go test -v .
+ === RUN   TestBlackBox
+ === RUN   TestBlackBox/Config
+ === RUN   TestBlackBox/Maildir
+ === RUN   TestBlackBox/Server
+ === RUN   TestBlackBox/Client
+ === RUN   TestBlackBox/Client/Verification
+ --- PASS: TestBlackBox (0.00s)
+    --- PASS: TestBlackBox/Config (0.00s)
+    --- PASS: TestBlackBox/Maildir (0.00s)
+    --- PASS: TestBlackBox/Server (0.00s)
+    --- PASS: TestBlackBox/Client (0.00s)
+        --- PASS: TestBlackBox/Client/Verification (0.00s)
+ PASS
+ ok  	github.com/lvgophers/smtpd/blackbox	0.005s
+
+* Minimum deliverable product?
+
+At this commit, timeout handling is not complete, some of the error handling is not graceful, and some configuration is not implemented.
+
+Features that could be added:
+
+ - SPF/DKIM/DMARC checking
+ - Extensions (STARTTLS in particular)
+ - Fine grained mailboxes/userdirs/mapping
+ - Special handling for empty MAIL FROM (bounces)
+ - SIGHUP handling to reload config
+ - More?
