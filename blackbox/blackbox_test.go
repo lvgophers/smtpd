@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/j7b/smtpd/config"
-	"github.com/j7b/smtpd/maildir"
-	"github.com/j7b/smtpd/server"
+	"github.com/lvgophers/smtpd/config"
+	"github.com/lvgophers/smtpd/maildir"
+	"github.com/lvgophers/smtpd/server"
 )
 
 var hostlist = []byte(`example.com

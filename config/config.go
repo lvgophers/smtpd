@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/j7b/smtpd/logging"
+	"github.com/lvgophers/smtpd/logging"
 )
 
 // Default constants.

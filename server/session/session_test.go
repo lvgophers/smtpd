@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/j7b/smtpd/types"
+	"github.com/lvgophers/smtpd/types"
 )
 
 const email = `Subject: hai

@@ -14,10 +14,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/j7b/smtpd/config"
-	"github.com/j7b/smtpd/logging"
-	"github.com/j7b/smtpd/maildir"
-	"github.com/j7b/smtpd/types"
+	"github.com/lvgophers/smtpd/config"
+	"github.com/lvgophers/smtpd/logging"
+	"github.com/lvgophers/smtpd/maildir"
+	"github.com/lvgophers/smtpd/types"
 )
 
 func init() {
