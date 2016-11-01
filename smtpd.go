@@ -26,7 +26,7 @@ func homedir() string {
 func getwd() string {
 	d, err := os.Getwd()
 	if err != nil {
-		panic(Err)
+		panic(err)
 	}
 	return d
 }
@@ -45,7 +45,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	l, err := net.Listen(*listenaddr)
+	l, err := net.Listen("tcp",*listenaddr)
 	if err != nil {
 		log.Fatal(err)
 	}
